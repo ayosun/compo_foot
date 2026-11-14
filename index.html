@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compo du dimanche</title>
+<style>
+:root{--bg:#f3f1ea;--ink:#1d2a22;--pitch:#2f7d46;--pitch2:#2a713f;--bleu:#2b5fd9;--vert:#a3e635;--sub:#6b7a70;--card:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a16;--ink:#e9efe9;--card:#1f2822;--sub:#8fa196}}
+:root[data-theme="dark"]{--bg:#141a16;--ink:#e9efe9;--card:#1f2822;--sub:#8fa196}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:16px;display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:820px){main{grid-template-columns:320px 1fr}}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:1.6rem;margin:0 0 4px}
+p.s{color:var(--sub);margin:0 0 12px;font-size:.9rem}
+.panel{background:var(--card);border-radius:12px;padding:14px}
+.row{display:flex;gap:8px;margin-bottom:8px}
+input,select,button{font:inherit;padding:9px 10px;border-radius:8px;border:1px solid #9aa89f;background:transparent;color:inherit;min-width:0}
+select option{color:#1d2a22}
+input{flex:1}
+button{cursor:pointer;background:var(--ink);color:var(--bg);border:0;font-weight:600}
+button.g{background:transparent;color:var(--ink);border:1px solid #9aa89f}
+button.big{width:100%;padding:12px;font-size:1rem;margin:4px 0 10px;background:var(--bleu);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+ul{list-style:none;margin:0;padding:0;max-height:300px;overflow:auto}
+li{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.2)}
+li button.d{width:22px;height:22px;padding:0;border-radius:50%;flex:none;border:2px solid rgba(128,128,128,.5)}
+li span.n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+li span.m{font-size:.75rem;color:var(--sub);white-space:nowrap}
+li button.x{padding:3px 9px;font-size:.8rem}
+#pitch{position:relative;width:100%;aspect-ratio:68/100;max-height:82vh;margin:0 auto;border-radius:12px;background:repeating-linear-gradient(0deg,var(--pitch) 0 10%,var(--pitch2) 10% 20%);touch-action:none;overflow:hidden}
+#pitch svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.p{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:grab;touch-action:none;user-select:none}
+.p i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 .85rem Georgia,serif;font-style:normal;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.p b{margin-top:2px;font-size:.72rem;color:#fff;background:rgba(0,0,0,.45);padding:1px 6px;border-radius:8px;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.p.drag{cursor:grabbing;z-index:9}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.note{font-size:.8rem;color:var(--sub);margin-top:8px}
+#stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.st{background:var(--card);border-radius:10px;padding:10px;font-size:.85rem;border-top:6px solid #8a948d}
+.st h3{margin:0 0 4px;font-size:1rem}
+</style>
+</head>
+<body>
+<main>
+<section class="panel">
+  <h1>Compo du dimanche</h1>
+  <p class="s">Ajoute les joueurs avec leur poste et leur note, puis équilibre les équipes.</p>
+  <div class="row">
+    <input id="name" placeholder="Nom du joueur" aria-label="Nom du joueur" maxlength="20">
+  </div>
+  <div class="row">
+    <select id="pos" aria-label="Poste">
+      <option value="G">Gardien</option><option value="D">Défenseur</option><option value="M" selected>Milieu</option><option value="A">Attaquant</option>
+    </select>
+    <select id="rate" aria-label="Note de 1 à 5">
+      <option value="1">1 ★</option><option value="2">2 ★</option><option value="3" selected>3 ★</option><option value="4">4 ★</option><option value="5">5 ★</option>
+    </select>
+    <button id="add">Ajouter</button>
+  </div>
+  <button class="big" id="bal">Équilibrer les équipes</button>
+  <ul id="list"></ul>
+  <div class="tools"><button class="g" id="clear">Tout vider</button></div>
+  <p class="note">Le rond de couleur change l’équipe d’un joueur à la main. Rappuie sur « Équilibrer » pour une autre combinaison. Les joueurs sont gardés dans ton navigateur sur cet appareil.</p>
+</section>
+<section>
+  <div id="pitch" aria-label="Terrain">
+    <svg viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="rgba(255,255,255,.75)" stroke-width=".5">
+      <rect x="2" y="2" width="64" height="96"/><line x1="2" y1="50" x2="66" y2="50"/>
+      <circle cx="34" cy="50" r="8"/><rect x="14" y="2" width="40" height="15"/><rect x="14" y="83" width="40" height="15"/>
+      <rect x="25" y="2" width="18" height="6"/><rect x="25" y="92" width="18" height="6"/>
+    </svg>
+  </div>
+  <div id="stats"></div>
+  <div class="tools">
+    <button id="png">Image des 2 équipes</button>
+    <button class="g" id="pngB">Image Bleus</button>
+    <button class="g" id="pngV">Image Verts</button>
+    <button class="g" id="copy">Copier en texte</button>
+  </div>
+</section>
+</main>
+<script>
+(function(){
+var K='compo-foot-v2',st={players:[]},pitch=document.getElementById('pitch');
+try{var r=localStorage.getItem(K);if(r){var o=JSON.parse(r);if(o&&o.players)st=o}}catch(e){}
+function save(){try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}}
+var POS={G:'Gardien',D:'Défenseur',M:'Milieu',A:'Attaquant'},SH={G:'GB',D:'DEF',M:'MIL',A:'ATT'},ORD=['G','D','M','A'];
+var T={B:{n:'Les Bleus',c:'#2b5fd9',f:'#fff'},V:{n:'Les Verts',c:'#a3e635',f:'#16210f'}},NONE={c:'#8a948d',f:'#fff'};
+function tm(p){return p.t?T[p.t]:NONE}
+function init(n){return n.trim().split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase()}
+function render(){
+  pitch.querySelectorAll('.p').forEach(function(e){e.remove()});
+  var ul=document.getElementById('list');ul.innerHTML='';
+  st.players.forEach(function(p,i){
+    var c=tm(p),d=document.createElement('div');d.className='p';d.style.left=p.x+'%';d.style.top=p.y+'%';
+    d.innerHTML='<i></i><b></b>';
+    var ic=d.querySelector('i');ic.style.background=c.c;ic.style.color=c.f;ic.textContent=init(p.n);
+    d.querySelector('b').textContent=p.n;
+    drag(d,p);pitch.appendChild(d);
+    var li=document.createElement('li');
+    li.innerHTML='<button class="d" aria-label="Changer d’équipe"></button><span class="n"></span><span class="m"></span><button class="g x">Retirer</button>';
+    var b=li.querySelector('.d');b.style.background=c.c;b.title=p.t?T[p.t].n:'Sans équipe';
+    b.onclick=function(){p.t=p.t==='B'?'V':(p.t==='V'?null:'B');save();render()};
+    li.querySelector('.n').textContent=p.n;
+    li.querySelector('.m').textContent=SH[p.p]+' · '+p.r+'★';
+    li.querySelector('.x').onclick=function(){st.players.splice(i,1);save();render()};
+    ul.appendChild(li);
+  });
+  stats();
+}
+function agg(t){var l=st.players.filter(function(p){return p.t===t}),s=0,c={G:0,D:0,M:0,A:0};
+  l.forEach(function(p){s+=p.r;c[p.p]++});return{l:l,s:s,c:c}}
+function stats(){
+  var el=document.getElementById('stats');el.innerHTML='';
+  ['B','V'].forEach(function(t){var a=agg(t),d=document.createElement('div');d.className='st';d.style.borderTopColor=T[t].c;
+    d.innerHTML='<h3></h3><div></div>';d.querySelector('h3').textContent=T[t].n;
+    d.querySelector('div').textContent=a.l.length+' joueurs · total '+a.s+' · moy. '+(a.l.length?(a.s/a.l.length).toFixed(2):'0')+' — '+ORD.map(function(k){return a.c[k]+' '+SH[k]}).join(' / ');
+    el.appendChild(d)});
+}
+function drag(el,p){
+  el.addEventListener('pointerdown',function(e){
+    el.setPointerCapture(e.pointerId);el.classList.add('drag');
+    function mv(ev){var b=pitch.getBoundingClientRect();
+      p.x=Math.max(3,Math.min(97,(ev.clientX-b.left)/b.width*100));
+      p.y=Math.max(3,Math.min(97,(ev.clientY-b.top)/b.height*100));
+      el.style.left=p.x+'%';el.style.top=p.y+'%'}
+    function up(){el.classList.remove('drag');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);save()}
+    el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);
+  });
+}
+function add(){
+  var i=document.getElementById('name'),n=i.value.trim();if(!n)return;
+  var k=st.players.length;
+  st.players.push({n:n,p:document.getElementById('pos').value,r:+document.getElementById('rate').value,t:null,x:10+(k*13)%80,y:50});
+  i.value='';save();render();i.focus();
+}
+document.getElementById('add').onclick=add;
+document.getElementById('name').onkeydown=function(e){if(e.key==='Enter')add()};
+document.getElementById('clear').onclick=function(){if(confirm('Supprimer tous les joueurs ?')){st.players=[];save();render()}};
+
+function cost(a,b){
+  var c=Math.abs(a.l.length-b.l.length)*6;
+  c+=Math.abs(a.s/(a.l.length||1)-b.s/(b.l.length||1))*8;
+  c+=Math.abs(a.s-b.s)*1.5;
+  ORD.forEach(function(k){c+=Math.abs(a.c[k]-b.c[k])*(k==='G'?5:2)});
+  ORD.forEach(function(k){var sa=0,sb=0;a.l.forEach(function(p){if(p.p===k)sa+=p.r});b.l.forEach(function(p){if(p.p===k)sb+=p.r});c+=Math.abs(sa-sb)*.6});
+  return c;
+}
+function balance(){
+  var ps=st.players;if(ps.length<2){alert('Ajoute au moins 2 joueurs.');return}
+  var best=null,bc=1e9,n=ps.length;
+  for(var it=0;it<5000;it++){
+    var idx=ps.map(function(_,i){return i});
+    for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=idx[i];idx[i]=idx[j];idx[j]=t}
+    var h=Math.floor(n/2)+(n%2&&Math.random()<.5?1:0),a={l:[],s:0,c:{G:0,D:0,M:0,A:0}},b={l:[],s:0,c:{G:0,D:0,M:0,A:0}};
+    idx.forEach(function(k,q){var p=ps[k],g=q<h?a:b;g.l.push(k);g.s+=p.r;g.c[p.p]++});
+    a.l=a.l.map(function(k){return ps[k]});b.l=b.l.map(function(k){return ps[k]});
+    var c=cost(a,b);
+    if(c<bc-1e-9){bc=c;best=[a.l.slice(),b.l.slice()]}
+    if(bc<1e-9)break;
+  }
+  ps.forEach(function(p){p.t=null});
+  best[0].forEach(function(p){p.t='B'});best[1].forEach(function(p){p.t='V'});
+  place();save();render();
+}
+function place(){
+  var Y={B:{G:92,D:78,M:64,A:54},V:{G:8,D:22,M:36,A:46}};
+  ['B','V'].forEach(function(t){ORD.forEach(function(k){
+    var l=st.players.filter(function(p){return p.t===t&&p.p===k});
+    l.forEach(function(p,j){p.x=100*(j+1)/(l.length+1);p.y=Y[t][k]});
+  })});
+}
+document.getElementById('bal').onclick=balance;
+
+document.getElementById('copy').onclick=function(){
+  var t=['B','V'].map(function(x){var a=agg(x);
+    return T[x].n+' ('+a.l.length+', total '+a.s+') :\n'+a.l.map(function(p){return '- '+p.n+' ('+POS[p.p]+', '+p.r+'★)'}).join('\n')}).join('\n\n');
+  try{navigator.clipboard.writeText(t)}catch(e){}
+};
+document.getElementById('png').onclick=function(){
+  var W=680,H=1000,L={B:agg('B'),V:agg('V')},rows=Math.max(L.B.l.length,L.V.l.length),EX=90+rows*30,c=document.createElement('canvas');c.width=W;c.height=H+EX;var g=c.getContext('2d');g.fillStyle='#f3f1ea';g.fillRect(0,0,W,H+EX);
+  for(var i=0;i<10;i++){g.fillStyle=i%2?'#2a713f':'#2f7d46';g.fillRect(0,i*100,W,100)}
+  g.strokeStyle='rgba(255,255,255,.8)';g.lineWidth=3;g.strokeRect(20,20,640,960);
+  g.beginPath();g.moveTo(20,500);g.lineTo(660,500);g.stroke();
+  g.beginPath();g.arc(340,500,80,0,7);g.stroke();
+  g.strokeRect(140,20,400,150);g.strokeRect(140,830,400,150);
+  g.textAlign='center';
+  st.players.forEach(function(p){var x=p.x/100*W,y=p.y/100*H,k=tm(p);
+    g.fillStyle=k.c;g.beginPath();g.arc(x,y,24,0,7);g.fill();g.strokeStyle='#fff';g.lineWidth=3;g.stroke();
+    g.fillStyle=k.f;g.font='bold 18px Georgia';g.fillText(init(p.n),x,y+6);
+    g.fillStyle='#fff';g.font='bold 15px sans-serif';g.lineWidth=4;g.strokeStyle='rgba(0,0,0,.6)';g.strokeText(p.n,x,y+44);g.fillText(p.n,x,y+44)});
+  ['B','V'].forEach(function(t,i){var x0=i?360:20,a=L[t];
+    g.fillStyle=T[t].c;g.fillRect(x0,H+20,300,40);
+    g.fillStyle=T[t].f;g.textAlign='left';g.font='bold 18px sans-serif';
+    g.fillText(T[t].n+' ('+a.l.length+') · total '+a.s,x0+12,H+46);
+    a.l.forEach(function(p,j){var y=H+88+j*30;
+      g.fillStyle='#1d2a22';g.textAlign='left';g.font='bold 17px sans-serif';g.fillText(p.n,x0+4,y);
+      g.textAlign='right';g.font='15px sans-serif';g.fillStyle='#6b7a70';g.fillText(SH[p.p]+' · '+p.r+'★',x0+296,y)})});
+  var a=document.createElement('a');a.download='compo.png';a.href=c.toDataURL('image/png');a.click();
+};
+var PAL={B:{bg:'#0d2a6e',strip:'#a3e635',sw:'#2b6bff'},V:{bg:'#0e4a2a',strip:'#2b8cff',sw:'#a3e635'}},FONT='900 {S}px Arial Black, Helvetica, Arial, sans-serif';
+function fnt(s){return FONT.replace('{S}',s)}
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function ph(t){return 120+Math.max(agg(t).l.length,8)*38+30}
+function panel(g,t,y0,W){
+  var a=agg(t),l=a.l.slice().sort(function(p,q){return ORD.indexOf(p.p)-ORD.indexOf(q.p)||q.r-p.r}),h=ph(t),C=PAL[t],title=T[t].n.toUpperCase();
+  g.save();g.translate(0,y0);g.beginPath();g.rect(0,0,W,h);g.clip();
+  g.fillStyle=C.bg;g.fillRect(0,0,W,h);
+  g.fillStyle='#050505';g.beginPath();g.arc(W+150,h+300,360,0,7);g.fill();
+  [[385,'#00e5c0',34],[425,C.sw,28],[455,'#ff8a00',22]].forEach(function(s){g.strokeStyle=s[1];g.lineWidth=s[2];g.beginPath();g.arc(W+150,h+300,s[0],0,7);g.stroke()});
+  g.fillStyle=C.strip;g.fillRect(0,0,58,h);
+  g.font=fnt(34);g.textAlign='left';g.textBaseline='alphabetic';
+  var tw=g.measureText(title).width;g.fillStyle='#e8ff2a';rr(g,20,22,tw+56,58,18);g.fill();
+  g.fillStyle='#111';g.fillText(title,48,63);
+  l.forEach(function(p,i){var y=146+i*38;
+    g.fillStyle='#fff';g.font=fnt(24);g.textAlign='center';g.fillText(String(i+1),113,y);
+    g.textAlign='left';g.fillText(p.n.toUpperCase()+(p.p==='G'?' (GK)':''),174,y)});
+  var cx=572,cy=190;
+  g.fillStyle='#fff';g.beginPath();g.arc(cx,cy,80,0,7);g.fill();
+  g.fillStyle=T[t].c;g.beginPath();g.arc(cx,cy,70,0,7);g.fill();
+  g.fillStyle=T[t].f;g.textAlign='center';
+  g.font=fnt(15);g.fillText('MOYENNE',cx,cy-22);
+  g.font=fnt(42);g.fillText(l.length?(a.s/l.length).toFixed(1):'0',cx,cy+20);
+  g.font=fnt(13);g.fillText(l.length+' JOUEURS',cx,cy+44);
+  g.restore();
+}
+function exp(ts,fn){
+  var W=680,gap=12,H=ts.reduce(function(s,t){return s+ph(t)},0)+gap*(ts.length-1),c=document.createElement('canvas');c.width=W;c.height=H;
+  var g=c.getContext('2d');g.fillStyle='#111';g.fillRect(0,0,W,H);
+  var y=0;ts.forEach(function(t){panel(g,t,y,W);y+=ph(t)+gap});
+  var a=document.createElement('a');a.download=fn;a.href=c.toDataURL('image/png');a.click();
+}
+document.getElementById('png').onclick=function(){exp(['B','V'],'compo.png')};
+document.getElementById('pngB').onclick=function(){exp(['B'],'les-bleus.png')};
+document.getElementById('pngV').onclick=function(){exp(['V'],'les-verts.png')};
+render();
+})();
+</script>
+</body>
+</html>
