@@ -4,54 +4,83 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Compo du dimanche</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,800&display=swap">
 <style>
-:root{--bg:#f3f1ea;--ink:#1d2a22;--pitch:#2f7d46;--pitch2:#2a713f;--bleu:#2b5fd9;--vert:#a3e635;--sub:#6b7a70;--card:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a16;--ink:#e9efe9;--card:#1f2822;--sub:#8fa196}}
-:root[data-theme="dark"]{--bg:#141a16;--ink:#e9efe9;--card:#1f2822;--sub:#8fa196}
+:root{--bg:#ece9df;--ink:#1d2a22;--pitch:#2f7d46;--pitch2:#2a713f;--bleu:#2b5fd9;--lime:#86e0c8;--sub:#6b7a70;--card:#fff;--bd:#c9d1ca;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1511;--ink:#e9efe9;--card:#1b241e;--sub:#8fa196;--bd:#3a463e}}
+:root[data-theme="dark"]{--bg:#0f1511;--ink:#e9efe9;--card:#1b241e;--sub:#8fa196;--bd:#3a463e}
 *{box-sizing:border-box}
 html{height:100%}
-body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif}
-main{max-width:1000px;margin:0 auto;padding:16px;display:grid;gap:16px;grid-template-columns:1fr}
-@media(min-width:820px){main{grid-template-columns:320px 1fr}}
-h1{font-family:Georgia,"Times New Roman",serif;font-size:1.6rem;margin:0 0 4px}
-p.s{color:var(--sub);margin:0 0 12px;font-size:.9rem}
-.panel{background:var(--card);border-radius:12px;padding:14px}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.t{grid-column:1/-1;background:var(--card);border-radius:28px;padding:20px;position:relative;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 24px -14px rgba(0,0,0,.25);transition:transform .2s}
+@media(hover:hover){.t:hover{transform:translateY(-2px)}}
+.lbl{margin:0 0 12px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);font-weight:700}
+h1{font-weight:800;font-size:clamp(2rem,5vw,3rem);line-height:1;margin:0 0 10px;letter-spacing:-.02em}
+h1 em{color:#fff;font-style:normal}
+.hero{background:linear-gradient(135deg,#1f6137,#2f7d46 60%,#3a9156);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;min-height:170px}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:230px;height:230px;border-radius:50%;border:4px solid rgba(255,255,255,.22)}
+.hero::before{content:"";position:absolute;right:-5px;top:0;bottom:0;width:4px;background:rgba(255,255,255,.12)}
+.hero .ball{position:absolute;right:22px;top:16px;font-size:2.4rem;z-index:1}
+p.s{margin:0;font-size:.92rem;opacity:.85;max-width:34ch;position:relative;z-index:1}
+.hero h1{position:relative;z-index:1}
 .row{display:flex;gap:8px;margin-bottom:8px}
-input,select,button{font:inherit;padding:9px 10px;border-radius:8px;border:1px solid #9aa89f;background:transparent;color:inherit;min-width:0}
+input,select,button{font:inherit;padding:10px 12px;border-radius:14px;border:1px solid var(--bd);background:transparent;color:inherit;min-width:0}
 select option{color:#1d2a22}
 input{flex:1}
-button{cursor:pointer;background:var(--ink);color:var(--bg);border:0;font-weight:600}
-button.g{background:transparent;color:var(--ink);border:1px solid #9aa89f}
-button.big{width:100%;padding:12px;font-size:1rem;margin:4px 0 10px;background:var(--bleu);color:#fff}
+button{cursor:pointer;background:var(--ink);color:var(--bg);border:0;font-weight:700;transition:transform .15s,filter .15s}
+button:hover{filter:brightness(1.12)}button:active{transform:scale(.97)}
+button.g{background:transparent;color:var(--ink);border:1px solid var(--bd)}
+.bal{padding:0;background:#d8d4c7}
+button.big{width:100%;height:100%;min-height:96px;border-radius:28px;padding:20px;font-size:1.25rem;text-align:left;display:flex;flex-direction:column;justify-content:center;gap:4px;background:#d8d4c7;color:#1d2a22;font-weight:800}
+button.big small{font-weight:500;font-size:.8rem;opacity:.8}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
 ul{list-style:none;margin:0;padding:0;max-height:300px;overflow:auto}
-li{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.2)}
+li{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(128,128,128,.2)}
 li button.d{width:22px;height:22px;padding:0;border-radius:50%;flex:none;border:2px solid rgba(128,128,128,.5)}
 li span.n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 li span.m{font-size:.75rem;color:var(--sub);white-space:nowrap}
-li button.x{padding:3px 9px;font-size:.8rem}
-#pitch{position:relative;width:100%;aspect-ratio:68/100;max-height:82vh;margin:0 auto;border-radius:12px;background:repeating-linear-gradient(0deg,var(--pitch) 0 10%,var(--pitch2) 10% 20%);touch-action:none;overflow:hidden}
+li button.x{padding:3px 10px;font-size:.8rem;border-radius:10px}
+.pitchT{padding:12px;background:#1f6137}
+#pitch{position:relative;width:100%;aspect-ratio:68/100;max-height:82vh;margin:0 auto;border-radius:18px;background:repeating-linear-gradient(0deg,var(--pitch) 0 10%,var(--pitch2) 10% 20%);touch-action:none;overflow:hidden}
 #pitch svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .p{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:grab;touch-action:none;user-select:none}
-.p i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 .85rem Georgia,serif;font-style:normal;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.p i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 .85rem "DM Sans",sans-serif;font-style:normal;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.35)}
 .p b{margin-top:2px;font-size:.72rem;color:#fff;background:rgba(0,0,0,.45);padding:1px 6px;border-radius:8px;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .p.drag{cursor:grabbing;z-index:9}
-.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.note{font-size:.8rem;color:var(--sub);margin-top:8px}
-#stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.st{background:var(--card);border-radius:10px;padding:10px;font-size:.85rem;border-top:6px solid #8a948d}
-.st h3{margin:0 0 4px;font-size:1rem}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.listT .tools{margin-top:10px}
+.note{font-size:.78rem;color:var(--sub);margin:10px 0 0}
+#stats{display:contents}
+.st{grid-column:auto;border-radius:28px;padding:18px;font-size:.82rem;line-height:1.4;background:var(--bleu);color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 24px -14px rgba(0,0,0,.35)}
+.st:nth-child(2){background:var(--lime);color:#16210f}
+.st h3{margin:0 0 6px;font-size:1.25rem;font-weight:800}
+.st::after{content:"";position:absolute;right:-24px;bottom:-24px;width:80px;height:80px;border-radius:50%;border:3px solid currentColor;opacity:.2}
+.act{background:var(--ink);color:var(--bg)}
+.act .lbl{color:inherit;opacity:.6}
+.act button{background:#fff;color:#1d2a22}
+.act button.g{background:transparent;color:var(--bg);border:1px solid rgba(128,128,128,.6)}
+@media(min-width:820px){
+main{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero{grid-column:1/3;grid-row:1}
+.add{grid-column:3/5;grid-row:1}
+.pitchT{grid-column:1/3;grid-row:2/6}
+.bal{grid-column:3/5;grid-row:2}
+.st:nth-child(1){grid-column:3;grid-row:3}
+.st:nth-child(2){grid-column:4;grid-row:3}
+.listT{grid-column:3/5;grid-row:4;display:flex;flex-direction:column}
+.listT ul{flex:1;min-height:120px;max-height:340px}
+.act{grid-column:3/5;grid-row:5}
+}
 </style>
 </head>
 <body>
 <main>
-<section class="panel">
-  <h1>Compo du dimanche</h1>
-  <p class="s">Ajoute les joueurs avec leur poste et leur note, puis équilibre les équipes.</p>
-  <div class="row">
-    <input id="name" placeholder="Nom du joueur" aria-label="Nom du joueur" maxlength="20">
-  </div>
-  <div class="row">
+<header class="t hero"><h1>Compo du <em>dimanche</em></h1><p class="s">Ajoute les joueurs avec leur poste et leur note, puis équilibre les équipes.</p></header>
+<section class="t add">
+  <h2 class="lbl">Nouveau joueur</h2>
+  <div class="row"><input id="name" placeholder="Nom du joueur" aria-label="Nom du joueur" maxlength="20"></div>
+  <div class="row" style="margin:0">
     <select id="pos" aria-label="Poste">
       <option value="G">Gardien</option><option value="D">Défenseur</option><option value="M" selected>Milieu</option><option value="A">Attaquant</option>
     </select>
@@ -60,12 +89,9 @@ li button.x{padding:3px 9px;font-size:.8rem}
     </select>
     <button id="add">Ajouter</button>
   </div>
-  <button class="big" id="bal">Équilibrer les équipes</button>
-  <ul id="list"></ul>
-  <div class="tools"><button class="g" id="clear">Tout vider</button></div>
-  <p class="note">Le rond de couleur change l’équipe d’un joueur à la main. Rappuie sur « Équilibrer » pour une autre combinaison. Les joueurs sont gardés dans ton navigateur sur cet appareil.</p>
 </section>
-<section>
+<div class="t bal"><button class="big" id="bal">Équilibrer les équipes<small>Mélange par notes et par postes</small></button></div>
+<section class="t pitchT">
   <div id="pitch" aria-label="Terrain">
     <svg viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="rgba(255,255,255,.75)" stroke-width=".5">
       <rect x="2" y="2" width="64" height="96"/><line x1="2" y1="50" x2="66" y2="50"/>
@@ -73,7 +99,16 @@ li button.x{padding:3px 9px;font-size:.8rem}
       <rect x="25" y="2" width="18" height="6"/><rect x="25" y="92" width="18" height="6"/>
     </svg>
   </div>
-  <div id="stats"></div>
+</section>
+<div id="stats"></div>
+<section class="t listT">
+  <h2 class="lbl">Effectif</h2>
+  <ul id="list"></ul>
+  <div class="tools"><button class="g" id="clear">Tout vider</button></div>
+  <p class="note">Le rond de couleur change l’équipe d’un joueur à la main. Rappuie sur « Équilibrer » pour une autre combinaison. Les joueurs sont gardés dans ton navigateur sur cet appareil.</p>
+</section>
+<section class="t act">
+  <h2 class="lbl">Partager</h2>
   <div class="tools">
     <button id="png">Image des 2 équipes</button>
     <button class="g" id="pngB">Image Bleus</button>
@@ -88,7 +123,7 @@ var K='compo-foot-v2',st={players:[]},pitch=document.getElementById('pitch');
 try{var r=localStorage.getItem(K);if(r){var o=JSON.parse(r);if(o&&o.players)st=o}}catch(e){}
 function save(){try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}}
 var POS={G:'Gardien',D:'Défenseur',M:'Milieu',A:'Attaquant'},SH={G:'GB',D:'DEF',M:'MIL',A:'ATT'},ORD=['G','D','M','A'];
-var T={B:{n:'Les Bleus',c:'#2b5fd9',f:'#fff'},V:{n:'Les Verts',c:'#a3e635',f:'#16210f'}},NONE={c:'#8a948d',f:'#fff'};
+var T={B:{n:'Les Bleus',c:'#2b5fd9',f:'#fff'},V:{n:'Les Verts',c:'#86e0c8',f:'#10241f'}},NONE={c:'#8a948d',f:'#fff'};
 function tm(p){return p.t?T[p.t]:NONE}
 function init(n){return n.trim().split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase()}
 function render(){
@@ -201,7 +236,7 @@ document.getElementById('png').onclick=function(){
       g.textAlign='right';g.font='15px sans-serif';g.fillStyle='#6b7a70';g.fillText(SH[p.p]+' · '+p.r+'★',x0+296,y)})});
   var a=document.createElement('a');a.download='compo.png';a.href=c.toDataURL('image/png');a.click();
 };
-var PAL={B:{bg:'#0d2a6e',strip:'#a3e635',sw:'#2b6bff'},V:{bg:'#0e4a2a',strip:'#2b8cff',sw:'#a3e635'}},FONT='900 {S}px Arial Black, Helvetica, Arial, sans-serif';
+var PAL={B:{bg:'#0d2a6e',strip:'#86e0c8',sw:'#2b6bff'},V:{bg:'#0d4a44',strip:'#2b8cff',sw:'#86e0c8'}},FONT='900 {S}px Arial Black, Helvetica, Arial, sans-serif';
 function fnt(s){return FONT.replace('{S}',s)}
 function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
 function ph(t){return 120+Math.max(agg(t).l.length,8)*38+30}
@@ -209,9 +244,9 @@ function panel(g,t,y0,W){
   var a=agg(t),l=a.l.slice().sort(function(p,q){return ORD.indexOf(p.p)-ORD.indexOf(q.p)||q.r-p.r}),h=ph(t),C=PAL[t],title=T[t].n.toUpperCase();
   g.save();g.translate(0,y0);g.beginPath();g.rect(0,0,W,h);g.clip();
   g.fillStyle=C.bg;g.fillRect(0,0,W,h);
-  g.fillStyle='#050505';g.beginPath();g.arc(W+150,h+300,360,0,7);g.fill();
-  [[385,'#00e5c0',34],[425,C.sw,28],[455,'#ff8a00',22]].forEach(function(s){g.strokeStyle=s[1];g.lineWidth=s[2];g.beginPath();g.arc(W+150,h+300,s[0],0,7);g.stroke()});
-  g.fillStyle=C.strip;g.fillRect(0,0,58,h);
+  
+  
+  
   g.font=fnt(34);g.textAlign='left';g.textBaseline='alphabetic';
   var tw=g.measureText(title).width;g.fillStyle='#e8ff2a';rr(g,20,22,tw+56,58,18);g.fill();
   g.fillStyle='#111';g.fillText(title,48,63);
