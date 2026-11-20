@@ -262,9 +262,8 @@ function panel(g,t,y0,W){
   g.fillStyle='#fff';g.beginPath();g.arc(cx,cy,80,0,7);g.fill();
   g.fillStyle=T[t].c;g.beginPath();g.arc(cx,cy,70,0,7);g.fill();
   g.fillStyle=T[t].f;g.textAlign='center';
-  g.font=fnt(15);g.fillText('MOYENNE',cx,cy-22);
-  g.font=fnt(42);g.fillText(l.length?(a.s/l.length).toFixed(1):'0',cx,cy+20);
-  g.font=fnt(13);g.fillText(l.length+' JOUEURS',cx,cy+44);
+  g.font=fnt(52);g.fillText(String(l.length),cx,cy+12);
+  g.font=fnt(15);g.fillText('JOUEURS',cx,cy+40);
   g.restore();
 }
 function exp(ts,fn){
