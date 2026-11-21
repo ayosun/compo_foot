@@ -28,6 +28,12 @@ p.s{margin:0;font-size:.92rem;opacity:.85;max-width:34ch;position:relative;z-ind
 input,select,button{font:inherit;padding:10px 12px;border-radius:14px;border:1px solid var(--bd);background:transparent;color:inherit;min-width:0}
 select option{color:#1d2a22}
 input{flex:1}
+input[type=color]{flex:none;width:46px;height:42px;padding:3px;cursor:pointer}
+[hidden]{display:none!important}
+.cap{font-size:.78rem;color:var(--sub);align-self:center;white-space:nowrap}
+.mrow .cap:first-child{min-width:62px}
+.mrow select{flex:1}
+.mrow select option{color:#1d2a22}
 button{cursor:pointer;background:var(--ink);color:var(--bg);border:0;font-weight:700;transition:transform .15s,filter .15s}
 button:hover{filter:brightness(1.12)}button:active{transform:scale(.97)}
 button.g{background:transparent;color:var(--ink);border:1px solid var(--bd)}
@@ -59,7 +65,7 @@ li button.x{padding:3px 10px;font-size:.8rem;border-radius:10px}
 .listT .tools{margin-top:10px}
 .note{font-size:.78rem;color:var(--sub);margin:10px 0 0}
 #stats{display:contents}
-.st{grid-column:auto;border-radius:28px;padding:18px;font-size:.82rem;line-height:1.4;background:var(--bleu);color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 24px -14px rgba(0,0,0,.35)}
+.st{grid-column:auto;border:1px solid rgba(128,128,128,.3);border-radius:28px;padding:18px;font-size:.82rem;line-height:1.4;background:var(--bleu);color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 24px -14px rgba(0,0,0,.35)}
 .st h3{margin:0 0 6px;font-size:1.25rem;font-weight:800}
 .st::after{content:"";position:absolute;right:-24px;bottom:-24px;width:80px;height:80px;border-radius:50%;border:3px solid currentColor;opacity:.2}
 .act{background:var(--ink);color:var(--bg)}
@@ -70,12 +76,13 @@ li button.x{padding:3px 10px;font-size:.8rem;border-radius:10px}
 main{grid-template-columns:repeat(4,minmax(0,1fr))}
 .hero{grid-column:1/3;grid-row:1}
 .add{grid-column:3/5;grid-row:1}
-.pitchT{grid-column:1/3;grid-row:2/6}
+.pitchT{grid-column:1/3;grid-row:2/7}
 .bal{grid-column:3/5;grid-row:2}
 #stats{display:grid;grid-column:3/5;grid-row:3;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .listT{grid-column:3/5;grid-row:4;display:flex;flex-direction:column}
 .listT ul{flex:1;min-height:120px;max-height:340px}
-.act{grid-column:3/5;grid-row:5}
+.teamsT{grid-column:3/5;grid-row:5}
+.act{grid-column:3/5;grid-row:6}
 }
 </style>
 </head>
@@ -97,7 +104,7 @@ main{grid-template-columns:repeat(4,minmax(0,1fr))}
 </section>
 <div class="t bal"><div class="seg" role="group" aria-label="Nombre d’équipes"><button data-n="2">2 équipes</button><button data-n="4">4 équipes</button></div><button class="big" id="bal">Équilibrer les équipes<small>Mélange par notes et par postes</small></button></div>
 <section class="t pitchT">
-  <div class="pitches" id="pitches"><div class="pw"><p class="pl">Terrain 1 · Bleu 1 – Vert 1</p>
+  <div class="pitches" id="pitches"><div class="pw"><p class="pl" id="pl1"></p>
   <div id="pitch" aria-label="Terrain 1">
     <svg viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="rgba(240,234,214,.62)" stroke-width=".32" stroke-linejoin="round">
       <rect x="3" y="3" width="62" height="94"/><line x1="3" y1="50" x2="65" y2="50"/>
@@ -110,7 +117,7 @@ main{grid-template-columns:repeat(4,minmax(0,1fr))}
       <rect x="29.5" y="1.2" width="9" height="1.8" stroke="rgba(240,234,214,.4)"/><rect x="29.5" y="97" width="9" height="1.8" stroke="rgba(240,234,214,.4)"/>
     </svg>
   </div></div>
-  <div class="pw pw2"><p class="pl">Terrain 2 · Bleu 2 – Vert 2</p><div id="pitch2" aria-label="Terrain 2"></div></div></div>
+  <div class="pw pw2"><p class="pl" id="pl2"></p><div id="pitch2" aria-label="Terrain 2"></div></div></div>
 </section>
 <div id="stats"></div>
 <section class="t listT">
@@ -119,6 +126,15 @@ main{grid-template-columns:repeat(4,minmax(0,1fr))}
   <div class="tools"><button class="g" id="clear">Tout vider</button></div>
   <p class="note">Le rond de couleur change l’équipe d’un joueur à la main. Rappuie sur « Équilibrer » pour une autre combinaison. Les joueurs sont gardés dans ton navigateur sur cet appareil.</p>
 </section>
+<section class="t teamsT">
+  <h2 class="lbl">Équipes</h2>
+  <div id="teamEd"></div>
+  <p class="cap" style="margin:12px 0 6px">Qui joue contre qui</p>
+  <div class="row mrow"><span class="cap" id="cap1">Match</span><select id="m0" aria-label="Équipe 1"></select><span class="cap">vs</span><select id="m1" aria-label="Équipe 2"></select></div>
+  <div class="row mrow" id="mrow2" hidden><span class="cap">Terrain 2</span><select id="m2" aria-label="Équipe 3"></select><span class="cap">vs</span><select id="m3" aria-label="Équipe 4"></select></div>
+  <div class="tools" style="margin-top:6px"><button class="g" id="resetT">Noms et couleurs par défaut</button></div>
+  <p class="note">Bleu et vert jouent par défaut ; noir et blanc sont prêts pour les matchs à 4 équipes ou à choisir ci-dessus. Tu peux renommer et recolorer chaque équipe.</p>
+</section>
 <section class="t act">
   <h2 class="lbl">Partager</h2>
   <div class="tools" id="share"></div>
@@ -126,22 +142,23 @@ main{grid-template-columns:repeat(4,minmax(0,1fr))}
 </main>
 <script>
 (function(){
-var K='compo-foot-v2',st={players:[],n:2},pitch=document.getElementById('pitch'),pitch2=document.getElementById('pitch2');
+var K='compo-foot-v2',DEF=[{n:'Les Bleus',c:'#2b5fd9'},{n:'Les Verts',c:'#86e0c8'},{n:'Les Noirs',c:'#1a1a1a'},{n:'Les Blancs',c:'#ffffff'}],st={players:[],n:2,teams:null,slots:[0,1,2,3]},pitch=document.getElementById('pitch'),pitch2=document.getElementById('pitch2');
 pitch2.innerHTML=pitch.querySelector('svg').outerHTML;
-function pitchOf(p){return st.n===4&&(p.t==='B2'||p.t==='V2')?pitch2:pitch}
+function pitchOf(p){return st.n===4&&teams().indexOf(p.t)>=2?pitch2:pitch}
 try{var r=localStorage.getItem(K);if(r){var o=JSON.parse(r);if(o&&o.players)st=o}}catch(e){}
 if(st.n!==4)st.n=2;
+var OLD={B:'T0',V:'T1',B1:'T0',V1:'T1',B2:'T2',V2:'T3'};
+st.players.forEach(function(p){if(p.t&&OLD[p.t])p.t=OLD[p.t]});
+st.teams=DEF.map(function(d,i){var t=(st.teams&&st.teams[i])||{};return{n:typeof t.n==='string'?t.n:d.n,c:/^#[0-9a-f]{6}$/i.test(t.c)?t.c:d.c}});
+if(!Array.isArray(st.slots)||st.slots.slice().sort().join()!=='0,1,2,3')st.slots=[0,1,2,3];
 function save(){try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}}
 var POS={G:'Gardien',D:'Défenseur',M:'Milieu',A:'Attaquant'},SH={G:'GB',D:'DEF',M:'MIL',A:'ATT'},ORD=['G','D','M','A'];
-var T={
-  B:{n:'Les Bleus',s:'Bleus',u:'les-bleus',c:'#2b5fd9',f:'#fff'},
-  V:{n:'Les Verts',s:'Verts',u:'les-verts',c:'#86e0c8',f:'#10241f'},
-  B1:{n:'Bleu 1',s:'Bleu 1',u:'bleu-1',c:'#2b5fd9',f:'#fff'},
-  B2:{n:'Bleu 2',s:'Bleu 2',u:'bleu-2',c:'#2b5fd9',f:'#fff'},
-  V1:{n:'Vert 1',s:'Vert 1',u:'vert-1',c:'#86e0c8',f:'#10241f'},
-  V2:{n:'Vert 2',s:'Vert 2',u:'vert-2',c:'#86e0c8',f:'#10241f'}
-},NONE={c:'#8a948d',f:'#fff'};
-function teams(){return st.n===4?['B1','V1','B2','V2']:['B','V']}
+var T={},NONE={c:'#8a948d',f:'#fff'};
+function slug(x){return x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'equipe'}
+function ink(c){var v=parseInt(c.slice(1),16);return .299*(v>>16)+.587*(v>>8&255)+.114*(v&255)>150?'#10241f':'#fff'}
+function shade(c,k){var v=parseInt(c.slice(1),16);return 'rgb('+Math.round((v>>16)*k)+','+Math.round((v>>8&255)*k)+','+Math.round((v&255)*k)+')'}
+function refreshT(){T={};st.teams.forEach(function(t,i){var n=t.n.trim()||DEF[i].n;T['T'+i]={n:n,s:n,u:slug(n),c:t.c,f:ink(t.c)}})}
+function teams(){return st.slots.slice(0,st.n).map(function(i){return 'T'+i})}
 function tm(p){return p.t&&T[p.t]&&teams().indexOf(p.t)>=0?T[p.t]:NONE}
 function init(n){return n.trim().split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase()}
 function render(){
@@ -175,6 +192,10 @@ function stats(){
 }
 function mode(){
   document.getElementById('pitches').classList.toggle('two',st.n===4);
+  var tt=teams();
+  document.getElementById('pl1').textContent='Terrain 1 · '+T[tt[0]].n+' – '+T[tt[1]].n;
+  if(tt.length>2)document.getElementById('pl2').textContent='Terrain 2 · '+T[tt[2]].n+' – '+T[tt[3]].n;
+  syncSel();
   document.querySelectorAll('.seg button').forEach(function(b){var on=+b.dataset.n===st.n;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
   var el=document.getElementById('share'),ts=teams();el.innerHTML='';
   function mk(label,cls,fn){var b=document.createElement('button');if(cls)b.className=cls;b.textContent=label;b.onclick=fn;el.appendChild(b)}
@@ -182,6 +203,40 @@ function mode(){
   ts.forEach(function(t){mk('Image '+T[t].s,'g',function(){exp([t],T[t].u+'.png')})});
   mk('Copier en texte','g',copyTxt);
 }
+function syncSel(){
+  for(var k=0;k<4;k++){var s=document.getElementById('m'+k);
+    for(var i=0;i<4;i++)s.options[i].textContent=T['T'+i].n;
+    s.value=st.slots[k]}
+  document.getElementById('mrow2').hidden=st.n!==4;
+  document.getElementById('cap1').textContent=st.n===4?'Terrain 1':'Match';
+}
+function initSel(){
+  [0,1,2,3].forEach(function(k){var s=document.getElementById('m'+k);
+    for(var i=0;i<4;i++){var o=document.createElement('option');o.value=i;s.appendChild(o)}
+    s.onchange=function(){
+      var v=+s.value,old=st.slots[k],j=st.slots.indexOf(v);
+      if(v===old)return;
+      st.slots[j]=old;st.slots[k]=v;
+      var a='T'+old,b='T'+v;
+      st.players.forEach(function(p){if(p.t===a)p.t=b;else if(p.t===b)p.t=a});
+      save();render();
+    };
+  });
+}
+function upd(){refreshT();save();render()}
+function buildEditor(){
+  var box=document.getElementById('teamEd');box.innerHTML='';
+  st.teams.forEach(function(t,i){
+    var r=document.createElement('div');r.className='row';
+    var c=document.createElement('input');c.type='color';c.value=t.c;c.setAttribute('aria-label','Couleur de l’équipe '+(i+1));
+    var n=document.createElement('input');n.value=t.n;n.maxLength=16;n.setAttribute('aria-label','Nom de l’équipe '+(i+1));
+    c.oninput=function(){t.c=c.value;upd()};
+    n.oninput=function(){t.n=n.value;upd()};
+    n.onblur=function(){if(!n.value.trim()){n.value=DEF[i].n;t.n=DEF[i].n;upd()}};
+    r.appendChild(c);r.appendChild(n);box.appendChild(r);
+  });
+}
+document.getElementById('resetT').onclick=function(){st.teams=DEF.map(function(d){return{n:d.n,c:d.c}});buildEditor();upd()};
 function setN(k){
   if(st.n===k)return;
   st.n=k;st.players.forEach(function(p){p.t=null});
@@ -257,12 +312,11 @@ function balance(){
   best.forEach(function(ix,g){ix.forEach(function(m){ps[m].t=ts[g]})});
   place();save();render();
 }
-var PL={B:['b',0,100],V:['v',0,100],B1:['b',0,100],B2:['b',0,100],V1:['v',0,100],V2:['v',0,100]};
 function place(){
   var Y={b:{G:92,D:78,M:64,A:54},v:{G:8,D:22,M:36,A:46}};
-  teams().forEach(function(t){var q=PL[t];ORD.forEach(function(k){
+  teams().forEach(function(t,i){var side=i%2?'v':'b';ORD.forEach(function(k){
     var l=st.players.filter(function(p){return p.t===t&&p.p===k});
-    l.forEach(function(p,j){p.x=q[1]+(q[2]-q[1])*(j+1)/(l.length+1);p.y=Y[q[0]][k]});
+    l.forEach(function(p,j){p.x=100*(j+1)/(l.length+1);p.y=Y[side][k]});
   })});
 }
 document.getElementById('bal').onclick=balance;
@@ -272,14 +326,14 @@ function copyTxt(){
     return T[x].n+' ('+a.l.length+', total '+a.s+') :\n'+a.l.map(function(p){return '- '+p.n+' ('+POS[p.p]+', '+p.r+'★)'}).join('\n')}).join('\n\n');
   try{navigator.clipboard.writeText(t)}catch(e){}
 }
-var PAL={B:{bg:'#0d2a6e'},V:{bg:'#0d4a44'},B1:{bg:'#0d2a6e'},B2:{bg:'#0d2a6e'},V1:{bg:'#0d4a44'},V2:{bg:'#0d4a44'}},FONT='900 {S}px Arial Black, Helvetica, Arial, sans-serif';
+var FONT='900 {S}px Arial Black, Helvetica, Arial, sans-serif';
 function fnt(s){return FONT.replace('{S}',s)}
 function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
 function ph(t){return 120+Math.max(agg(t).l.length,8)*38+30}
 function panel(g,t,y0,W){
-  var a=agg(t),l=a.l.slice().sort(function(p,q){return ORD.indexOf(p.p)-ORD.indexOf(q.p)||q.r-p.r}),h=ph(t),C=PAL[t],title=T[t].n.toUpperCase();
+  var a=agg(t),l=a.l.slice().sort(function(p,q){return ORD.indexOf(p.p)-ORD.indexOf(q.p)||q.r-p.r}),h=ph(t),title=T[t].n.toUpperCase();
   g.save();g.translate(0,y0);g.beginPath();g.rect(0,0,W,h);g.clip();
-  g.fillStyle=C.bg;g.fillRect(0,0,W,h);
+  g.fillStyle=shade(T[t].c,.36);g.fillRect(0,0,W,h);
   g.font=fnt(34);g.textAlign='left';g.textBaseline='alphabetic';
   var tw=g.measureText(title).width;g.fillStyle='#e8ff2a';rr(g,20,22,tw+56,58,18);g.fill();
   g.fillStyle='#111';g.fillText(title,48,63);
@@ -300,6 +354,7 @@ function exp(ts,fn){
   var y=0;ts.forEach(function(t){panel(g,t,y,W);y+=ph(t)+gap});
   var a=document.createElement('a');a.download=fn;a.href=c.toDataURL('image/png');a.click();
 }
+refreshT();initSel();buildEditor();
 render();
 })();
 </script>
